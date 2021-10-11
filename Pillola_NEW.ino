@@ -1,3 +1,9 @@
+// Pillola - Smart pill dispenser
+// © 2021 Pranav Ramesh. All rights reserved.
+// This code may not be duplicated or distributed
+// elsewhere in any manner by any party. All rights to
+// the code are attributed to Pranav Ramesh.
+
 #include <Adafruit_Fingerprint.h>
 #include <LiquidCrystal.h>
 #include <Keypad.h>
