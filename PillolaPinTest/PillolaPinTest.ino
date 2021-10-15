@@ -1,9 +1,3 @@
-// Pillola - Smart pill dispenser
-// © 2021 Pranav Ramesh. All rights reserved.
-// This code may not be duplicated or distributed
-// elsewhere in any manner by any party. All rights to
-// the code are attributed to Pranav Ramesh.
-
 #include <Adafruit_Fingerprint.h>
 #include <LiquidCrystal.h>
 #include <Keypad.h>
@@ -44,7 +38,8 @@ int getFingerprintID() {
 
 void setup() {
   Serial.begin(9600);
-  lcd.begin(16, 2);
+  lcd.begin(16,2);
+  lcd.setCursor(0,0);
   dialServo.attach(A5, 300, 2500);
   //  dialServo.attach(A4);
   dialServo.write(4);
@@ -72,68 +67,19 @@ void setup() {
   }
 }
 
-int i = 0;
-char passcode[4] = {'1', '3', '7', '9'};
-char key;
-
-boolean authenticateKeypad(String message) {
-  lcd.clear();
-  lcd.setCursor(0, 0); lcd.print(message);
-  lcd.setCursor(0, 1); lcd.print("Passcode: ");
-  short digit = 0;
-  char givenCode[4];
-  bool correct;
-  do {
-    key = customKeypad.getKey();
-    if (key >= 48 && key < 58 && digit < 4) {
-      givenCode[digit] = key;
-      Serial.print("Digit "); Serial.print(digit);
-      Serial.print(":"); Serial.println(key);
-      correct = givenCode[digit] == passcode[digit++];
-      lcd.print(key);
-    } else if (key == 'B' && digit >= 0) {
-      digit = max(0, digit - 1);
-      lcd.setCursor(10 + digit, 1);
-      lcd.print(" "); lcd.setCursor(10 + digit, 1);
-      givenCode[digit] = '\0';
-    } else if (key == 'C' && digit == 4) {
-      if (correct) {
-        lcd.clear();
-        lcd.setCursor(0, 0); lcd.print("Correct");
-        lcd.setCursor(0, 1); lcd.print("passcode.");
-        delay(1500); lcd.clear();
-      } else {
-        lcd.clear();
-        lcd.setCursor(0, 0); lcd.print("Incorrect");
-        lcd.setCursor(0, 1); lcd.print("passcode.");
-        delay(1500); lcd.clear();
-      }
-      return correct;
-    }
-  } while (true);
-}
-
 void loop() {
-  lcd.setCursor(0, 0);
-  key = customKeypad.getKey();
-
-  // No action
-  if (!key) {
-    lcd.print("Pillola");
+  lcd.setCursor(0,0);
+  char key = customKeypad.getKey();
+  if (key) {
+    lcd.clear();
+    lcd.print("Got "); lcd.print(key);
+    delay(1000);
+    lcd.clear();
+  } else {
+    lcd.print("Waiting...");
   }
-
-  // A
-  if (key == 'A') {
-    if (authenticateKeypad("Dispense pill")) {
-      dialServo.write(180);
-      delay(1500);
-      dialServo.write(4);
-    }
-  }
-
-  // B
-  else if (key == 'B') {
-    lcd.print("Looking for");
+  return;
+  lcd.print("Looking for");
     lcd.setCursor(0, 1); lcd.print("fingerprint...");
     int id = getFingerprintID();
     while (id <= 0) {
@@ -155,19 +101,5 @@ void loop() {
       lcd.clear();
 
     }
-  }
-
-  // C
-  else if (key == 'C') {
-    lcd.print("C");
-    lcd.setCursor(0, 1); lcd.print("Not assigned.");
-    delay(1000); lcd.clear();
-  }
-
-  // D
-  else if (key == 'D') {
-    lcd.print("D");
-    lcd.setCursor(0, 1); lcd.print("Not assigned.");
-    delay(1000); lcd.clear();
-  }
+    delay(1000);
 }
