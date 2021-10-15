@@ -1,4 +1,4 @@
-# Pillola
+# Pillola - Demo Code
 
 Smart pill dispenser. Built with Arduino. Developed in C++.
 
