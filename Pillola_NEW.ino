@@ -27,6 +27,7 @@ SoftwareSerial mySerial(2,3);
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 
 int getFingerprintID() {
+  
   uint8_t p = finger.getImage();
   if (p != FINGERPRINT_OK)  return -1;
 
